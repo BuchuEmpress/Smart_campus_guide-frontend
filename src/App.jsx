@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import WelcomeSimi from './pages/WelcomeSimi';
+import WelcomeCore from './pages/WelcomeCore';
 import Chatbot from './pages/Chatbot';
 import Navigation from './pages/Navigation';
 import AdminDashboard from './pages/AdminDashboard';
@@ -28,7 +28,7 @@ class App extends Component {
         <Routes>
           <Route path="/" element={<Login onLogin={this.handleLogin} />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/welcome" element={<WelcomeSimi />} />
+          <Route path="/welcome" element={<WelcomeCore />} />
           <Route path="/chat" element={<Chatbot />} />
           <Route path="/navigation" element={<Navigation />} />
           <Route path="/project-assistant" element={<ProjectAssistant />} />

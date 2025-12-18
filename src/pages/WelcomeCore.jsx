@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from '../utils/withRouter';
 import { Bot, Sparkles } from 'lucide-react';
 
-class WelcomeSimi extends Component {
+class WelcomeCore extends Component {
     render() {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-primary px-4 text-center">
@@ -15,7 +15,7 @@ class WelcomeSimi extends Component {
                 </div>
 
                 <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-                    Hi, I'm <span className="text-accent drop-shadow-[0_0_20px_rgba(217,70,239,0.5)]">Simi</span>
+                    Hi, I'm <span className="text-accent drop-shadow-[0_0_20px_rgba(217,70,239,0.5)]">Core</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-zinc-400 max-w-2xl mb-10 leading-relaxed">
@@ -48,4 +48,4 @@ class WelcomeSimi extends Component {
     }
 }
 
-export default withRouter(WelcomeSimi);
+export default withRouter(WelcomeCore);

@@ -5,6 +5,8 @@ import {
     Users, CheckCircle, Clock
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import topicService from '../api/topicService';
+import sessionUtils from '../utils/sessionUtils';
 
 class ProjectAssistant extends Component {
     state = {
@@ -17,20 +19,15 @@ class ProjectAssistant extends Component {
         messages: [],
         chatInput: '',
         isTyping: false,
+        sessionId: sessionUtils.getSessionId(),
 
         // Defense Archive State
         defenseSearch: '',
         defenseDepartmentFilter: 'All',
-        defenseTopics: [
-            { id: 1, title: "Deep Learning for Smart Agriculture", student: "Alice Johnson", supervisor: "Dr. A. Smith", department: "CS", year: 2024 },
-            { id: 2, title: "Blockchain in Supply Chain Management", student: "Bob Wilson", supervisor: "Prof. B. Jones", department: "Business", year: 2023 },
-            { id: 3, title: "Renewable Energy Grid Optimization", student: "Charlie Brown", supervisor: "Dr. C. White", department: "Engineering", year: 2024 },
-            { id: 4, title: "Sentiment Analysis of Social Media Trends", student: "David Lee", supervisor: "Dr. A. Smith", department: "CS", year: 2023 },
-            { id: 5, title: "IoT Based Home Automation", student: "Eve Davis", supervisor: "Dr. E. Black", department: "CS", year: 2024 },
-            { id: 6, title: "Impact of AI on Digital Marketing", student: "Frank Miller", supervisor: "Prof. B. Jones", department: "Business", year: 2023 },
-        ],
+        defenseTopics: [],
+        isArchiveLoading: false,
 
-        // Allocations State
+        // Allocations State (Mock for now as per docs)
         allocationSearch: '',
         allocations: [
             { id: 1, student: "John Smith", project: "Smart Campus App", supervisor: "Dr. Alice Web", status: "In Progress", department: "CS" },
@@ -38,6 +35,37 @@ class ProjectAssistant extends Component {
             { id: 3, student: "Mike Ross", project: "Legal Case Prediction", supervisor: "Dr. Pearson", status: "Pending", department: "Law" },
             { id: 4, student: "Rachel Green", project: "Fashion Trend Analysis", supervisor: "Prof. Geller", status: "In Progress", department: "Arts" },
         ]
+    };
+
+    componentDidMount() {
+        this.fetchDefenseTopics();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.activeTab !== this.state.activeTab && this.state.activeTab === 'defense') {
+            this.fetchDefenseTopics();
+        }
+    }
+
+    fetchDefenseTopics = async () => {
+        const { defenseSearch, defenseDepartmentFilter } = this.state;
+        this.setState({ isArchiveLoading: true });
+        try {
+            const results = await topicService.search(defenseSearch, defenseDepartmentFilter);
+            // Map backend topic object to frontend expected structure
+            const mapped = results.map(t => ({
+                id: t.topic_id,
+                title: t.title,
+                student: t.student || "N/A",
+                supervisor: t.supervisor || "N/A",
+                department: t.department,
+                year: t.year || 2024
+            }));
+            this.setState({ defenseTopics: mapped, isArchiveLoading: false });
+        } catch (error) {
+            console.error('Archive fetch error:', error);
+            this.setState({ isArchiveLoading: false });
+        }
     };
 
     toggleSidebar = () => {
@@ -56,27 +84,39 @@ class ProjectAssistant extends Component {
         });
     };
 
-    handleChatSend = (e) => {
+    handleChatSend = async (e) => {
         e.preventDefault();
         if (!this.state.chatInput.trim()) return;
 
-        const userMsg = { id: Date.now(), text: this.state.chatInput, sender: 'user' };
+        const { chatInput, sessionId, selectedAssistantDepartment } = this.state;
+        const userMsg = { id: Date.now(), text: chatInput, sender: 'user' };
+
         this.setState(prev => ({
             messages: [...prev.messages, userMsg],
             chatInput: '',
             isTyping: true
         }));
 
-        setTimeout(() => {
-            let botText = "That sounds like an interesting project topic. Have you considered exploring the recent literature on this?";
-
-            if (this.state.chatInput.toLowerCase().includes("methodology")) {
-                botText = `For ${this.state.selectedAssistantDepartment.name} projects, a mixed-method approach usually works best. Shall I draft a sample outline?`;
-            }
-
-            const botMsg = { id: Date.now() + 1, text: botText, sender: 'bot' };
+        try {
+            const response = await topicService.chat(chatInput, sessionId, selectedAssistantDepartment.name);
+            const botMsg = {
+                id: Date.now() + 1,
+                text: response.message || "I'm sorry, I couldn't process that suggestion.",
+                sender: 'bot'
+            };
+            this.setState(prev => ({
+                messages: [...prev.messages, botMsg],
+                isTyping: false
+            }));
+        } catch (error) {
+            console.error('Assistant error:', error);
+            const botMsg = {
+                id: Date.now() + 1,
+                text: "I'm having trouble connecting to the academic advisor service. Please try again later.",
+                sender: 'bot'
+            };
             this.setState(prev => ({ messages: [...prev.messages, botMsg], isTyping: false }));
-        }, 1500);
+        }
     }
 
     renderAssistant() {
@@ -247,7 +287,7 @@ class ProjectAssistant extends Component {
                             className="w-full bg-zinc-800/50 border border-transparent focus:border-accent rounded-lg py-2 pl-12 pr-4 text-white focus:outline-none transition-colors"
                             placeholder="Search by title or student..."
                             value={this.state.defenseSearch}
-                            onChange={e => this.setState({ defenseSearch: e.target.value })}
+                            onChange={e => this.setState({ defenseSearch: e.target.value }, this.fetchDefenseTopics)}
                         />
                     </div>
                     <div className="relative w-full md:w-auto min-w-[200px]">
@@ -255,7 +295,7 @@ class ProjectAssistant extends Component {
                         <select
                             className="w-full bg-zinc-800/50 border border-transparent focus:border-accent rounded-lg py-2 pl-12 pr-4 text-white focus:outline-none transition-colors appearance-none cursor-pointer"
                             value={this.state.defenseDepartmentFilter}
-                            onChange={e => this.setState({ defenseDepartmentFilter: e.target.value })}
+                            onChange={e => this.setState({ defenseDepartmentFilter: e.target.value }, this.fetchDefenseTopics)}
                         >
                             <option value="All">All Departments</option>
                             <option value="CS">Computer Science</option>

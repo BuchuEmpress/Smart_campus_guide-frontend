@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import { Send, User, Menu } from 'lucide-react';
+import { Send, User, Menu, Bot } from 'lucide-react';
 import { withRouter } from '../utils/withRouter';
 import Sidebar from '../components/Sidebar';
+import navigationService from '../api/navigationService';
+import sessionUtils from '../utils/sessionUtils';
 
 class Chatbot extends Component {
     constructor(props) {
         super(props);
         this.state = {
             messages: [
-                { id: 1, text: "Hello! I'm Simi. How can I help you navigate the campus today?", sender: 'bot' }
+                { id: 1, text: "Hello! I'm Core. How can I help you navigate the campus today?", sender: 'bot' }
             ],
             input: '',
             isTyping: false,
-            isSidebarOpen: false
+            isSidebarOpen: false,
+            sessionId: sessionUtils.getSessionId()
         };
         this.messagesEndRef = React.createRef();
     }
@@ -29,35 +32,48 @@ class Chatbot extends Component {
         this.messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
 
-    handleSend = (e) => {
+    handleSend = async (e) => {
         e.preventDefault();
         if (!this.state.input.trim()) return;
 
-        const userMsg = { id: Date.now(), text: this.state.input, sender: 'user' };
+        const { input, sessionId, messages } = this.state;
+        const userMsg = { id: Date.now(), text: input, sender: 'user' };
+
         this.setState(prev => ({
             messages: [...prev.messages, userMsg],
             input: '',
             isTyping: true
         }));
 
-        // Simulate bot response
-        setTimeout(() => {
-            let botText = "I can help with that! let me check my database...";
-            const lowerInput = userMsg.text.toLowerCase();
+        try {
+            // Get location if possible
+            const location = await sessionUtils.getCurrentLocation();
 
-            if (lowerInput.includes('location') || lowerInput.includes('where')) {
-                botText = "That location is in Building B, 2nd Floor. I can show you the map.";
-            } else if (lowerInput.includes('defense') || lowerInput.includes('topic')) {
-                botText = "You can find defense topics in the Archive section. Would you like me to take you there?";
-            } else if (lowerInput.includes('project')) {
-                botText = "Project allocations are available on the dashboard.";
-            } else if (lowerInput.includes('hello') || lowerInput.includes('hi')) {
-                botText = "Hi there! What are you looking for?";
-            }
+            // Call API
+            const response = await navigationService.chat(input, sessionId, location);
 
-            const botMsg = { id: Date.now() + 1, text: botText, sender: 'bot' };
-            this.setState(prev => ({ messages: [...prev.messages, botMsg], isTyping: false }));
-        }, 1500);
+            const botMsg = {
+                id: Date.now() + 1,
+                text: response.message || "I'm sorry, I couldn't process that.",
+                sender: 'bot'
+            };
+
+            this.setState(prev => ({
+                messages: [...prev.messages, botMsg],
+                isTyping: false
+            }));
+        } catch (error) {
+            console.error('Chat error:', error);
+            const errorMsg = {
+                id: Date.now() + 1,
+                text: "Oops! I'm having trouble connecting to my brain right now. Please try again.",
+                sender: 'bot'
+            };
+            this.setState(prev => ({
+                messages: [...prev.messages, errorMsg],
+                isTyping: false
+            }));
+        }
     }
 
     toggleSidebar = () => {
@@ -88,7 +104,7 @@ class Chatbot extends Component {
                                 <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-zinc-900 animate-pulse"></div>
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold">Simi</h3>
+                                <h3 className="text-lg font-bold">Core</h3>
                                 <span className="text-sm text-zinc-400 flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Online
                                 </span>

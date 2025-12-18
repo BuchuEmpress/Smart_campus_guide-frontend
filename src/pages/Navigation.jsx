@@ -1,19 +1,58 @@
 import React, { Component } from 'react';
-import { Search, MapPin, Navigation as NavIcon, Menu } from 'lucide-react';
+import { Search, MapPin, Navigation as NavIcon, Menu, Wifi, WifiOff } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import navigationService from '../api/navigationService';
+import cacheService from '../api/cacheService';
+import sessionUtils from '../utils/sessionUtils';
 
 class Navigation extends Component {
     state = {
         search: '',
         selectedLocation: null,
-        locations: [
-            { id: 1, name: "Amphi 750", floor: "Ground Floor", type: "Lecture Hall", coords: "Block A" },
-            { id: 2, name: "Central Library", floor: "2nd Floor", type: "Building", coords: "Block C" },
-            { id: 3, name: "Student Cafeteria", floor: "Ground Floor", type: "Amenity", coords: "Block B" },
-            { id: 4, name: "Computer Lab 1", floor: "1st Floor", type: "Lab", coords: "Block A" },
-            { id: 5, name: "Admin Office", floor: "3rd Floor", type: "Office", coords: "Block D" },
-        ],
-        isSidebarOpen: false
+        locations: [],
+        isSidebarOpen: false,
+        isOnline: navigator.onLine,
+        isLoading: false
+    };
+
+    componentDidMount() {
+        this.fetchLocations();
+        window.addEventListener('online', this.updateOnlineStatus);
+        window.addEventListener('offline', this.updateOnlineStatus);
+
+        // Sync cache if needed
+        if (cacheService.shouldSync()) {
+            cacheService.downloadArchive().catch(console.error);
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('online', this.updateOnlineStatus);
+        window.removeEventListener('offline', this.updateOnlineStatus);
+    }
+
+    updateOnlineStatus = () => {
+        this.setState({ isOnline: navigator.onLine });
+    };
+
+    fetchLocations = async () => {
+        const { search, isOnline } = this.state;
+        this.setState({ isLoading: true });
+
+        try {
+            if (isOnline) {
+                const results = await navigationService.search(search || "University");
+                this.setState({ locations: results, isLoading: false });
+            } else {
+                const results = cacheService.searchOffline(search);
+                this.setState({ locations: results, isLoading: false });
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            // Fallback to offline on error
+            const results = cacheService.searchOffline(search);
+            this.setState({ locations: results, isLoading: false });
+        }
     };
 
     toggleSidebar = () => {
@@ -21,7 +60,23 @@ class Navigation extends Component {
     };
 
     handleSearch = (e) => {
-        this.setState({ search: e.target.value });
+        this.setState({ search: e.target.value }, () => {
+            // Debounce or immediate search
+            this.fetchLocations();
+        });
+    };
+
+    handleGetDirections = async () => {
+        const { selectedLocation } = this.state;
+        if (!selectedLocation) return;
+
+        try {
+            const userLoc = await sessionUtils.getCurrentLocation();
+            const response = await navigationService.navigate(selectedLocation.name, userLoc);
+            alert(`Directions: ${response.message}`);
+        } catch (error) {
+            alert("Could not calculate directions. Please try again.");
+        }
     };
 
     render() {
@@ -45,7 +100,13 @@ class Navigation extends Component {
                     <Menu size={24} />
                 </button>
                 <div className="container mx-auto px-4 py-8">
-                    <h1 className="text-3xl font-bold mb-8">Campus <span className="text-accent">Navigation</span></h1>
+                    <div className="flex justify-between items-center mb-8">
+                        <h1 className="text-3xl font-bold">Campus <span className="text-accent">Navigation</span></h1>
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${this.state.isOnline ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'}`}>
+                            {this.state.isOnline ? <Wifi size={14} /> : <WifiOff size={14} />}
+                            {this.state.isOnline ? 'Online' : 'Offline Mode'}
+                        </div>
+                    </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
                         {/* Sidebar List */}
@@ -99,8 +160,11 @@ class Navigation extends Component {
                                     <p className="text-zinc-400 mb-6 font-medium">
                                         {this.state.selectedLocation.floor}, {this.state.selectedLocation.coords}
                                     </p>
-                                    <button className="btn-primary flex items-center gap-2 mx-auto">
-                                        <Navigation size={18} /> Start Walking Directions
+                                    <button
+                                        className="btn-primary flex items-center gap-2 mx-auto"
+                                        onClick={this.handleGetDirections}
+                                    >
+                                        <NavIcon size={18} /> Start Walking Directions
                                     </button>
                                 </div>
                             ) : (
