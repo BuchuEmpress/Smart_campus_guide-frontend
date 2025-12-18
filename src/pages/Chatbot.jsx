@@ -64,9 +64,10 @@ class Chatbot extends Component {
             }));
         } catch (error) {
             console.error('Chat error:', error);
+            const errorDetail = error.response?.data?.detail || error.message;
             const errorMsg = {
                 id: Date.now() + 1,
-                text: "Oops! I'm having trouble connecting to my brain right now. Please try again.",
+                text: `Oops! I'm having trouble connecting to my brain. (${errorDetail}). Please try again later.`,
                 sender: 'bot'
             };
             this.setState(prev => ({
