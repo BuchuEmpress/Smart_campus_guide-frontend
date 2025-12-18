@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import { BarChart, Users, FileText, AlertTriangle, ArrowUpRight, Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import topicService from '../api/topicService';
