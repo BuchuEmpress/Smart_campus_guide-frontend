@@ -98,7 +98,7 @@ class ProjectAssistant extends Component {
         }));
 
         try {
-            const response = await topicService.chat(chatInput, sessionId, selectedAssistantDepartment.name);
+            const response = await topicService.chat(chatInput, sessionId, selectedAssistantDepartment.id);
             const botMsg = {
                 id: Date.now() + 1,
                 text: response.message || "I'm sorry, I couldn't process that suggestion.",
@@ -121,9 +121,9 @@ class ProjectAssistant extends Component {
 
     renderAssistant() {
         const departments = [
-            { id: 'se', name: 'Software Engineering', icon: '💻', desc: 'Software Systems & Development' },
+            { id: 'sen', name: 'Software Engineering', icon: '💻', desc: 'Software Systems & Development' },
             { id: 'cnsm', name: 'Computer Networking and System Maintenance', icon: '📡', desc: 'Networks, Hardware & Security' },
-            { id: 'ds', name: 'Data Science', icon: '📊', desc: 'Big Data, AI & Analytics' },
+            { id: 'das', name: 'Data Science', icon: '📊', desc: 'Big Data, AI & Analytics' },
         ];
 
         if (!this.state.selectedAssistantDepartment) {

@@ -1,10 +1,30 @@
-import React, { Component } from 'react';
 import { BarChart, Users, FileText, AlertTriangle, ArrowUpRight, Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import topicService from '../api/topicService';
 
 class AdminDashboard extends Component {
     state = {
-        isSidebarOpen: false
+        isSidebarOpen: false,
+        stats: {
+            totalTopics: 0
+        }
+    };
+
+    componentDidMount() {
+        this.fetchStats();
+    }
+
+    fetchStats = async () => {
+        try {
+            const data = await topicService.getStatistics();
+            this.setState({
+                stats: {
+                    totalTopics: data.total_topics || 0
+                }
+            });
+        } catch (error) {
+            console.error('Failed to fetch admin stats:', error);
+        }
     };
 
     toggleSidebar = () => {
@@ -41,7 +61,7 @@ class AdminDashboard extends Component {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                         <StatCard icon={<Users size={24} />} title="Active Students" value="1,245" change="+12% from last month" />
                         <StatCard icon={<BarChart size={24} />} title="Chat Queries" value="45,982" change="+8% this week" />
-                        <StatCard icon={<FileText size={24} />} title="Defense Topics" value="845" change="+3 new today" />
+                        <StatCard icon={<FileText size={24} />} title="Defense Topics" value={this.state.stats.totalTopics.toLocaleString()} change="Live from Backend" />
                         <StatCard icon={<AlertTriangle size={24} />} title="Lost Items" value="12" change="2 recovered" color="text-yellow-500" bg="bg-yellow-500/10" />
                     </div>
 

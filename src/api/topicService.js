@@ -26,6 +26,10 @@ export const topicService = {
             payload.department = department;
         }
         return apiClient.post('/topics/chat', payload);
+    },
+
+    getStatistics: () => {
+        return apiClient.get('/topics/statistics');
     }
 };
 
