@@ -9,7 +9,7 @@ class WelcomeCore extends Component {
                 <div className="relative mb-10 group">
                     <div className="absolute inset-0 bg-accent rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500 animate-pulse-slow"></div>
                     <div className="w-40 h-40 rounded-full bg-gradient-to-br from-accent to-purple-900 border-4 border-white/10 flex items-center justify-center relative z-10 shadow-2xl group-hover:scale-105 transition-transform duration-300">
-                        <Bot size={80} className="text-white drop-shadow-lg" />
+                        <span className="text-white text-8xl font-black drop-shadow-2xl">C</span>
                     </div>
                     <Sparkles className="absolute top-0 right-0 text-yellow-300 animate-bounce delay-700" />
                 </div>
@@ -26,13 +26,13 @@ class WelcomeCore extends Component {
                     <p className="text-white font-semibold mb-4 text-lg">Try asking me:</p>
                     <ul className="space-y-3 text-zinc-400">
                         <li className="flex items-center gap-3 bg-zinc-800/50 p-3 rounded-lg hover:bg-zinc-800 transition-colors cursor-default">
-                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "Where is Amphi 750?"
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "Where is the Central Administration?"
                         </li>
                         <li className="flex items-center gap-3 bg-zinc-800/50 p-3 rounded-lg hover:bg-zinc-800 transition-colors cursor-default">
-                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "How do I find Dr. Smith's office?"
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "Where's Amphi 650?"
                         </li>
                         <li className="flex items-center gap-3 bg-zinc-800/50 p-3 rounded-lg hover:bg-zinc-800 transition-colors cursor-default">
-                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "Show me defense topics"
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span> "Please for some defense topics"
                         </li>
                     </ul>
                 </div>

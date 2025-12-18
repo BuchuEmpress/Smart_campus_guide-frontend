@@ -52,7 +52,7 @@ class Sidebar extends Component {
                                 <Home size={20} /> Home
                             </NavLink>
                             <NavLink to="/chat" className={linkClass} onClick={onClose}>
-                                <MessageSquare size={20} /> General Chat
+                                <MessageSquare size={20} /> Chat with Core
                             </NavLink>
                             <NavLink to="/project-assistant" className={linkClass} onClick={onClose}>
                                 <GraduationCap size={20} /> Project Assistant

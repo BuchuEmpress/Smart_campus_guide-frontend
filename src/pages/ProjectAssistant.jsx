@@ -121,9 +121,9 @@ class ProjectAssistant extends Component {
 
     renderAssistant() {
         const departments = [
-            { id: 'se', name: 'Software Engineering', icon: '💻', desc: 'Software Systems & Development' },
-            { id: 'cnsm', name: 'Computer Networking and System Maintenance', icon: '📡', desc: 'Networks, Hardware & Security' },
-            { id: 'ds', name: 'Data Science', icon: '📊', desc: 'Big Data, AI & Analytics' },
+            { id: 'epe', name: 'Electric Power Engineering (EPE)', icon: '⚡', desc: 'Power Systems & Electrical Engineering' },
+            { id: 'eee', name: 'Electrical & Electronic Engineering (EEE)', icon: '🔌', desc: 'Electronics & Communication' },
+            { id: 'apt', name: 'Animal Production Technology (APT)', icon: '🐾', desc: 'Animal Science & Production' },
         ];
 
         if (!this.state.selectedAssistantDepartment) {
@@ -131,7 +131,7 @@ class ProjectAssistant extends Component {
                 <div className="animate-fade-in">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Choose Your <span className="text-accent">Department</span>
+                            Choose your <span className="text-accent">Option</span>
                         </h2>
                         <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
                             Connect with a specialized AI assistant that can help guide you through your final year project journey.
@@ -161,7 +161,7 @@ class ProjectAssistant extends Component {
                     onClick={() => this.setState({ selectedAssistantDepartment: null })}
                     className="mb-4 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors w-fit"
                 >
-                    <ArrowLeft size={18} /> Back to Departments
+                    <ArrowLeft size={18} /> Back to Options
                 </button>
 
                 <div className="flex-1 glass-panel rounded-2xl overflow-hidden flex flex-col border border-white/10">
@@ -297,10 +297,10 @@ class ProjectAssistant extends Component {
                             value={this.state.defenseDepartmentFilter}
                             onChange={e => this.setState({ defenseDepartmentFilter: e.target.value }, this.fetchDefenseTopics)}
                         >
-                            <option value="All">All Departments</option>
-                            <option value="CS">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Business">Business</option>
+                            <option value="All">All Options</option>
+                            <option value="EPE">Electric Power Engineering (EPE)</option>
+                            <option value="EEE">Electrical & Electronic Engineering (EEE)</option>
+                            <option value="APT">Animal Production Technology (APT)</option>
                         </select>
                     </div>
                 </div>

@@ -100,7 +100,7 @@ class Chatbot extends Component {
                         {/* Header */}
                         <div className="p-6 bg-zinc-900/50 border-b border-white/5 flex items-center gap-4 backdrop-blur-md sticky top-0 z-10">
                             <div className="relative">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-purple-800 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-white/10">S</div>
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-purple-800 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-white/10">C</div>
                                 <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-zinc-900 animate-pulse"></div>
                             </div>
                             <div>
