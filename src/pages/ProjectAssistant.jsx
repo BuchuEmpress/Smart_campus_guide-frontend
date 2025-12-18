@@ -301,6 +301,7 @@ class ProjectAssistant extends Component {
                             <option value="EPE">Electric Power Engineering (EPE)</option>
                             <option value="EEE">Electrical & Electronic Engineering (EEE)</option>
                             <option value="APT">Animal Production Technology (APT)</option>
+                            <option value="CEN">Computer Engineering (CEN)</option>
                         </select>
                     </div>
                 </div>
