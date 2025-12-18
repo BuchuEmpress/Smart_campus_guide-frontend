@@ -64,10 +64,29 @@ class Chatbot extends Component {
             }));
         } catch (error) {
             console.error('Chat error:', error);
+            const isNetworkError = error.message === 'Network Error';
             const errorDetail = error.response?.data?.detail || error.message;
             const errorMsg = {
                 id: Date.now() + 1,
-                text: `Oops! I'm having trouble connecting to my brain. (${errorDetail}). Please try again later.`,
+                text: (
+                    <span>
+                        {`Oops! I'm having trouble connecting to my brain. (${errorDetail}).`}
+                        {isNetworkError && (
+                            <div className="mt-2 text-xs">
+                                <span className="text-zinc-400">If the server is sleeping, try to </span>
+                                <a
+                                    href="https://smart-campus-guide-backend.onrender.com/api/topics/statistics"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-accent hover:underline font-bold"
+                                >
+                                    Wake it Up here
+                                </a>
+                                <span className="text-zinc-400"> and then try again.</span>
+                            </div>
+                        )}
+                    </span>
+                ),
                 sender: 'bot'
             };
             this.setState(prev => ({
