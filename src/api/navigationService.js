@@ -21,7 +21,7 @@ export const navigationService = {
         if (userLocation) {
             payload.user_location = userLocation;
         }
-        return apiClient.post('/navigation/chat', payload);
+        return apiClient.post('/chat', payload);
     }
 };
 
