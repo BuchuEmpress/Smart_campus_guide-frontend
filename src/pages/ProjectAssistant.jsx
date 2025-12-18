@@ -121,9 +121,9 @@ class ProjectAssistant extends Component {
 
     renderAssistant() {
         const departments = [
-            { id: 'epe', name: 'Electric Power Engineering (EPE)', icon: '⚡', desc: 'Power Systems & Electrical Engineering' },
-            { id: 'eee', name: 'Electrical & Electronic Engineering (EEE)', icon: '🔌', desc: 'Electronics & Communication' },
-            { id: 'apt', name: 'Animal Production Technology (APT)', icon: '🐾', desc: 'Animal Science & Production' },
+            { id: 'se', name: 'Software Engineering', icon: '💻', desc: 'Software Systems & Development' },
+            { id: 'cnsm', name: 'Computer Networking and System Maintenance', icon: '📡', desc: 'Networks, Hardware & Security' },
+            { id: 'ds', name: 'Data Science', icon: '📊', desc: 'Big Data, AI & Analytics' },
         ];
 
         if (!this.state.selectedAssistantDepartment) {
@@ -297,7 +297,7 @@ class ProjectAssistant extends Component {
                             value={this.state.defenseDepartmentFilter}
                             onChange={e => this.setState({ defenseDepartmentFilter: e.target.value }, this.fetchDefenseTopics)}
                         >
-                            <option value="All">All Options</option>
+                            <option value="All">All Departments</option>
                             <option value="EPE">Electric Power Engineering (EPE)</option>
                             <option value="EEE">Electrical & Electronic Engineering (EEE)</option>
                             <option value="APT">Animal Production Technology (APT)</option>
