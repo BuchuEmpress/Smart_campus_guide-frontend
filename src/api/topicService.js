@@ -13,7 +13,7 @@ const _validateAndFallbackLocation = (userLocation, methodName) => {
     return DEFAULT_CAMPUS_LOCATION;
 };
 
-export const topicService = {
+const topicService = {
     search: (query, department = null, topicId = null, userLocation = null, limit = 10) => {
         const payload = { query, limit };
         if (department && department !== 'All') {
@@ -88,3 +88,5 @@ export const topicService = {
         return apiClient.get('/topics/statistics');
     }
 };
+
+export default topicService;

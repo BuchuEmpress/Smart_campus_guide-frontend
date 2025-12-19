@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BarChart, Users, FileText, AlertTriangle, ArrowUpRight, Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
-import topicService from '../api/topicService';
+import topicService from '../api/topicService.js';
 
 class AdminDashboard extends Component {
     state = {
