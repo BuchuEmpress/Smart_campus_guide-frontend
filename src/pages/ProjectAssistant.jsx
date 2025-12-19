@@ -29,6 +29,7 @@ class ProjectAssistant extends Component {
         defenseDepartmentFilter: 'All',
         defenseTopics: [],
         isArchiveLoading: false,
+        selectedTopic: null, // Added to store the currently selected topic
 
         // Allocations State (Mock for now as per docs)
         allocationSearch: '',
@@ -39,6 +40,35 @@ class ProjectAssistant extends Component {
             { id: 4, student: "Rachel Green", project: "Fashion Trend Analysis", supervisor: "Prof. Geller", status: "In Progress", department: "Arts" },
         ]
     };
+
+    handleTopicCardClick = async (topic) => {
+        this.setState({ selectedTopic: topic });
+        console.log('Topic card clicked:', topic);
+
+        const { selectedAssistantDepartment } = this.state;
+        const department = selectedAssistantDepartment ? selectedAssistantDepartment.id : null;
+        const topicId = topic.id;
+
+        try {
+            const userLocation = await sessionUtils.getCurrentLocation();
+            
+            // Simulate calls to other topicService methods for testing
+            const [similarityResults, suggestResults, improveResults] = await Promise.all([
+                topicService.similarity(topicId, department, userLocation),
+                topicService.suggest(department, 'related', topicId, userLocation), // 'related' is an example option
+                topicService.improve(topicId, department, userLocation, ['methodology'], 'How can I make this more robust?'), // Example aspects and message
+            ]);
+
+            console.log('Similarity Results:', similarityResults);
+            console.log('Suggest Results:', suggestResults);
+            console.log('Improve Results:', improveResults);
+
+            // You could store these results in state and render them in the UI if needed
+        } catch (error) {
+            console.error('Error testing topic service methods:', error);
+        }
+    };
+
 
     componentDidMount() {
         this.fetchDefenseTopics();
@@ -360,7 +390,9 @@ class ProjectAssistant extends Component {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filtered.map(topic => (
-                        <div key={topic.id} className="glass-panel p-6 rounded-xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer border border-white/5 hover:border-accent/30 hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+                        <div key={topic.id}
+                            onClick={() => this.handleTopicCardClick(topic)} // Attach the handler here
+                            className="glass-panel p-6 rounded-xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer border border-white/5 hover:border-accent/30 hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                             <div className="flex justify-between items-start mb-4">
                                 <span className="text-xs px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold border border-accent/20">
                                     {topic.department}
