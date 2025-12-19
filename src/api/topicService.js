@@ -73,4 +73,4 @@ const topicService = {
 
 export default topicService;
 
-export default topicService;
+
