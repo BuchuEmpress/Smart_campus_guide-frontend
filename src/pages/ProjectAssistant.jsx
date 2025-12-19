@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {
     Menu, MessageSquare, Send, ArrowLeft, Bot,
     Search, Filter, BookOpen, GraduationCap, ArrowRight,
@@ -182,7 +185,35 @@ class ProjectAssistant extends Component {
                                     ? 'bg-accent text-white rounded-br-none'
                                     : 'bg-zinc-800 text-zinc-100 rounded-tl-none border border-white/5'
                                     }`}>
-                                    {msg.text}
+                                    {msg.sender === 'bot' ? (
+                                        <div className="ai-message-content">
+                                            <ReactMarkdown
+                                                components={{
+                                                    code: ({ inline, className, children, ...props }) => {
+                                                        const match = /language-(\w+)/.exec(className || '');
+                                                        return !inline && match ? (
+                                                            <SyntaxHighlighter
+                                                                style={atomOneDark}
+                                                                language={match[1]}
+                                                                PreTag="div"
+                                                                {...props}
+                                                            >
+                                                                {String(children).replace(/\n$/, '')}
+                                                            </SyntaxHighlighter>
+                                                        ) : (
+                                                            <code className={className} {...props}>
+                                                                {children}
+                                                            </code>
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                {msg.text}
+                                            </ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        msg.text
+                                    )}
                                 </div>
                             </div>
                         ))}

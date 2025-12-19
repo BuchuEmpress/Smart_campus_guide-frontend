@@ -85,4 +85,6 @@ class Login extends Component {
     }
 }
 
-export default withRouter(Login);
+const LoginWithRouter = withRouter(Login);
+LoginWithRouter.displayName = 'LoginWithRouter';
+export default LoginWithRouter;

@@ -74,7 +74,7 @@ class Navigation extends Component {
             const userLoc = await sessionUtils.getCurrentLocation();
             const response = await navigationService.navigate(selectedLocation.name, userLoc);
             alert(`Directions: ${response.message}`);
-        } catch (error) {
+        } catch {
             alert("Could not calculate directions. Please try again.");
         }
     };

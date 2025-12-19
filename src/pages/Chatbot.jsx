@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Send, User, Menu, Bot } from 'lucide-react';
+import { Send, Menu } from 'lucide-react';
 import { withRouter } from '../utils/withRouter';
 import Sidebar from '../components/Sidebar';
 import navigationService from '../api/navigationService';
@@ -36,7 +36,7 @@ class Chatbot extends Component {
         e.preventDefault();
         if (!this.state.input.trim()) return;
 
-        const { input, sessionId, messages } = this.state;
+        const { input, sessionId } = this.state;
         const userMsg = { id: Date.now(), text: input, sender: 'user' };
 
         this.setState(prev => ({
@@ -139,7 +139,13 @@ class Chatbot extends Component {
                                         ? 'bg-accent text-white rounded-br-none shadow-[0_4px_15px_rgba(217,70,239,0.3)]'
                                         : 'bg-zinc-800 text-zinc-100 rounded-tl-none border border-white/5'
                                         }`}>
-                                        {msg.text}
+                                        {msg.sender === 'bot' ? (
+                                            <div className="ai-message-content">
+                                                {msg.text}
+                                            </div>
+                                        ) : (
+                                            msg.text
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -176,7 +182,9 @@ class Chatbot extends Component {
                 </div>
             </div>
         );
+        }
     }
-}
 
-export default withRouter(Chatbot);
+    const ChatbotWithRouter = withRouter(Chatbot);
+    ChatbotWithRouter.displayName = 'ChatbotWithRouter';
+    export default ChatbotWithRouter;
