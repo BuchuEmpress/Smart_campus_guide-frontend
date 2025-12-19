@@ -82,6 +82,7 @@ class ProjectAssistant extends Component {
     selectDepartment = (dept) => {
         this.setState({
             selectedAssistantDepartment: dept,
+            defenseDepartmentFilter: dept.id, // Set the defense filter to the selected department
             messages: [{
                 id: 1,
                 text: `Welcome to the ${dept.name} project assistant! I'm here to help you with research, methodology, and technical guidance specific to your field. What are you working on?`,
