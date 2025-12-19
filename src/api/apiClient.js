@@ -29,7 +29,7 @@ apiClient.interceptors.request.use((config) => {
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
     (response) => {
-        console.log(`✅ API Response from ${response.config.url}:`, response.data);
+        console.log(`✅ API Response from ${response.config.url}:`, JSON.stringify(response.data, null, 2));
         return response.data;
     },
     (error) => {
