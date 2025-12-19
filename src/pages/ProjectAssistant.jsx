@@ -50,13 +50,11 @@ class ProjectAssistant extends Component {
         const topicId = topic.id;
 
         try {
-            const userLocation = await sessionUtils.getCurrentLocation();
-            
-            // Simulate calls to other topicService methods for testing
+            // Simulate calls to other topicService methods for testing (without userLocation)
             const [similarityResults, suggestResults, improveResults] = await Promise.all([
-                topicService.similarity(topicId, department, userLocation),
-                topicService.suggest(department, 'related', topicId, userLocation), // 'related' is an example option
-                topicService.improve(topicId, department, userLocation, ['methodology'], 'How can I make this more robust?'), // Example aspects and message
+                topicService.similarity(topicId, department),
+                topicService.suggest(department, 'related', topicId), // 'related' is an example option
+                topicService.improve(topicId, department, ['methodology'], 'How can I make this more robust?'), // Example aspects and message
             ]);
 
             console.log('Similarity Results:', similarityResults);
@@ -84,14 +82,10 @@ class ProjectAssistant extends Component {
         const { defenseSearch, defenseDepartmentFilter } = this.state;
         this.setState({ isArchiveLoading: true });
         try {
-            // Get user location for the search request
-            const userLocation = await sessionUtils.getCurrentLocation();
-
             const results = await topicService.search(
                 defenseSearch,
                 defenseDepartmentFilter,
-                null, // topicId is null for general search
-                userLocation
+                null // topicId is null for general search
             );
             // Always check that results.topics is an array before calling .map()
             const topics = Array.isArray(results.topics) ? results.topics : [];
@@ -143,15 +137,11 @@ class ProjectAssistant extends Component {
         }));
 
         try {
-            // Get user location for the chat request
-            const userLocation = await sessionUtils.getCurrentLocation();
-
             const response = await topicService.chat(
                 chatInput,
                 sessionId,
                 selectedAssistantDepartment.id,
-                null, // topicId is null for general chat
-                userLocation
+                null // topicId is null for general chat
             );
             const botMsg = {
                 id: Date.now() + 1,
@@ -164,9 +154,10 @@ class ProjectAssistant extends Component {
             }));
         } catch (error) {
             console.error('Assistant error:', error);
+            // Removed specific fallback message as per prompt
             const botMsg = {
                 id: Date.now() + 1,
-                text: "I'm having trouble connecting to the academic advisor service. Please try again later.",
+                text: "I'm sorry, I couldn't process that suggestion.", // General fallback message
                 sender: 'bot'
             };
             this.setState(prev => ({ messages: [...prev.messages, botMsg], isTyping: false }));
