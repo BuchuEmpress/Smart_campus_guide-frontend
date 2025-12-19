@@ -14,7 +14,10 @@ apiClient.interceptors.request.use((config) => {
     console.log(`🚀 API Request: ${config.method.toUpperCase()} ${config.baseURL}${config.url}`, config.data || '');
 
     // Validate user_location for navigation and chat requests
-    if (config.url.includes('/chat') || config.url.includes('/navigation/navigate')) {
+    // Validate user_location only for navigation usage (not topics)
+    const isNavigationEndpoint = config.url === '/chat' || config.url.includes('/navigation/navigate');
+
+    if (isNavigationEndpoint) {
         const userLocation = config.data?.user_location;
         if (!userLocation || typeof userLocation.lat !== 'number' || typeof userLocation.lon !== 'number') {
             console.warn(`⚠️ Warning: Request to ${config.url} is missing valid user_location (lat/lon numbers). Received:`, userLocation);

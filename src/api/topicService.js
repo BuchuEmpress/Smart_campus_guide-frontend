@@ -20,13 +20,16 @@ const topicService = {
         return apiClient.post('/topics/ai/suggest', payload);
     },
 
-    chat: (message, sessionId, department = null, topicId = null) => {
+    chat: (message, sessionId, department = null, option = null, topicId = null) => {
         const payload = {
             message,
             session_id: sessionId
         };
         if (department) {
-            payload.department = department;
+            payload.department = department; // "Computer Engineering"
+        }
+        if (option) {
+            payload.option = option; // "sen", "cnsm", "das"
         }
         if (topicId) {
             payload.topic_id = topicId;

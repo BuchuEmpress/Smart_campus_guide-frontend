@@ -140,8 +140,9 @@ class ProjectAssistant extends Component {
             const response = await topicService.chat(
                 chatInput,
                 sessionId,
-                selectedAssistantDepartment.id,
-                null // topicId is null for general chat
+                "Computer Engineering", // Department
+                selectedAssistantDepartment.id, // Option (subgroup: sen, cnsm, das)
+                null // topicId
             );
             const botMsg = {
                 id: Date.now() + 1,
