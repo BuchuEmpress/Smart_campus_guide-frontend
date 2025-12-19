@@ -54,7 +54,15 @@ class ProjectAssistant extends Component {
         const { defenseSearch, defenseDepartmentFilter } = this.state;
         this.setState({ isArchiveLoading: true });
         try {
-            const results = await topicService.search(defenseSearch, defenseDepartmentFilter);
+            // Get user location for the search request
+            const userLocation = await sessionUtils.getCurrentLocation();
+
+            const results = await topicService.search(
+                defenseSearch,
+                defenseDepartmentFilter,
+                null, // topicId is null for general search
+                userLocation
+            );
             // Always check that results.topics is an array before calling .map()
             const topics = Array.isArray(results.topics) ? results.topics : [];
 

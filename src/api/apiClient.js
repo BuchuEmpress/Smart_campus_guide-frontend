@@ -2,6 +2,12 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://smart-campus-guide-backend.onrender.com/api';
 
+// Default coordinates for the campus, for fallback when user location is unavailable
+export const DEFAULT_CAMPUS_LOCATION = {
+    lat: 30.0444, // Example latitude for a campus
+    lon: 31.2357  // Example longitude for a campus
+};
+
 const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
