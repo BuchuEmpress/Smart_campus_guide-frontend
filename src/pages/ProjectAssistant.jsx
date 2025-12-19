@@ -105,7 +105,16 @@ class ProjectAssistant extends Component {
         }));
 
         try {
-            const response = await topicService.chat(chatInput, sessionId, selectedAssistantDepartment.id);
+            // Get user location for the chat request
+            const userLocation = await sessionUtils.getCurrentLocation();
+
+            const response = await topicService.chat(
+                chatInput,
+                sessionId,
+                selectedAssistantDepartment.id,
+                null, // topicId is null for general chat
+                userLocation
+            );
             const botMsg = {
                 id: Date.now() + 1,
                 text: response.message || "I'm sorry, I couldn't process that suggestion.",

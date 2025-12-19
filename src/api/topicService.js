@@ -20,7 +20,7 @@ export const topicService = {
         return apiClient.post('/topics/ai/suggest', payload);
     },
 
-    chat: (message, sessionId, department = null, topicId = null) => {
+    chat: (message, sessionId, department = null, topicId = null, userLocation = null) => {
         const payload = {
             message,
             session_id: sessionId
@@ -30,6 +30,15 @@ export const topicService = {
         }
         if (topicId) {
             payload.topic_id = topicId;
+        }
+        if (userLocation) {
+            if (typeof userLocation.lat === 'number' && typeof userLocation.lon === 'number') {
+                payload.user_location = userLocation;
+            } else {
+                console.warn('⚠️ Warning: Invalid user_location provided to topicService.chat. Expected { lat: number, lon: number }, received:', userLocation);
+            }
+        } else {
+            console.warn('⚠️ Warning: user_location is missing in topicService.chat request.');
         }
         return apiClient.post('/topics/chat', payload);
     },
