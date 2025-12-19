@@ -55,8 +55,10 @@ class ProjectAssistant extends Component {
         this.setState({ isArchiveLoading: true });
         try {
             const results = await topicService.search(defenseSearch, defenseDepartmentFilter);
-            // Map backend topic object to frontend expected structure
-            const mapped = results.map(t => ({
+            // Always check that results.topics is an array before calling .map()
+            const topics = Array.isArray(results.topics) ? results.topics : [];
+
+            const mapped = topics.map(t => ({
                 id: t.topic_id,
                 title: t.title,
                 student: t.student || "N/A",
@@ -64,6 +66,7 @@ class ProjectAssistant extends Component {
                 department: t.department,
                 year: t.year || 2024
             }));
+
             this.setState({ defenseTopics: mapped, isArchiveLoading: false });
         } catch (error) {
             console.error('Archive fetch error:', error);

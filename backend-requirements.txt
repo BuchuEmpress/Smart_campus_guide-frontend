@@ -1,0 +1,59 @@
+Backend requirements checklist for frontend integration
+
+1) Base URL
+- Production and staging API base (e.g. https://api.example.com)
+- Any path prefix (e.g. /api or /api/v1)
+
+2) Health endpoint
+- Path (e.g. /health) and example successful response (HTTP 200 and JSON {"status":"ok"})
+
+3) Auth scheme
+- Type (JWT / OAuth2 / session cookies / none)
+- Login and token endpoints (/auth/login, /auth/refresh)
+- Token format, expiry times, refresh flow, public JWKS or OIDC discovery URL if applicable
+
+4) CORS policy
+- Allowed origin(s) for the frontend
+- Allowed methods and headers
+- Whether credentials (cookies) are allowed
+
+5) TLS / SSL
+- Is TLS terminated at LB/CDN? (Yes/No)
+- Certificate provider and whether HTTPS is mandatory for clients
+
+6) Rate limits & retry guidance
+- Per-client limits and status codes returned on throttling
+- Whether a Retry-After header is included and suggested retry policy
+
+7) API versioning and compatibility
+- Current API version and versioning scheme (header or path)
+- Breaking-change policy and deprecation window
+
+8) Error response format
+- Example error payload fields (e.g., message, code, details, validation errors)
+
+9) Important endpoints used by the frontend
+- List endpoints and example request/response for: login, cache (/cache/download), topics, navigation, etc.
+
+10) Cookie/session settings (if using cookies)
+- Cookie names, domain, SameSite, Secure, HttpOnly flags
+
+11) Deployment & DNS details
+- Hosting platform (Render/Heroku/Azure/Vercel/Custom)
+- DNS names, env var names to set (e.g., VITE_API_URL)
+- Any path rewrites or proxies
+
+12) DB migrations & rollback procedure
+- How migrations are applied and rollback steps in case of failure
+
+13) Monitoring & health hooks
+- Metrics or health endpoints, log access, and any smoke-test or post-deploy webhook to call
+
+14) Temporary test credentials
+- A staging/test user (username/password or token) and scope to run smoke tests
+
+15) Additional notes
+- Any auth headers required, custom headers, or client IP restrictions
+
+---
+Provide these details (or a short doc) and I will: configure the frontend env, add a health-check, add retries/backoff to the API client, and create a smoke-test script to run after deployment.

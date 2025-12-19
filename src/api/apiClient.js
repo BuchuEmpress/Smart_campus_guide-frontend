@@ -9,9 +9,18 @@ const apiClient = axios.create({
     },
 });
 
-// Request interceptor for logging
+// Request interceptor for logging and user_location validation
 apiClient.interceptors.request.use((config) => {
     console.log(`🚀 API Request: ${config.method.toUpperCase()} ${config.baseURL}${config.url}`, config.data || '');
+
+    // Validate user_location for navigation and chat requests
+    if (config.url.includes('/chat') || config.url.includes('/navigation/navigate')) {
+        const userLocation = config.data?.user_location;
+        if (!userLocation || typeof userLocation.lat !== 'number' || typeof userLocation.lon !== 'number') {
+            console.warn(`⚠️ Warning: Request to ${config.url} is missing valid user_location (lat/lon numbers). Received:`, userLocation);
+        }
+    }
+
     return config;
 }, (error) => {
     return Promise.reject(error);
